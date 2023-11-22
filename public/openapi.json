@@ -1,0 +1,211 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Hotellys",
+        "description": "API de Hotellys",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://apihotellys.wendyhuaman.com",
+            "description": "Dominio base de la API"
+        }
+    ],
+    "paths": {
+        "/api/categorias": {
+            "get": {
+                "tags": [
+                    "Categorías"
+                ],
+                "summary": "Obtiene la lista de categorías",
+                "operationId": "54f1c2eb3e6da98834e21c2f759a8595",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "tipo": {
+                                                "description": "Tipo de la categoría",
+                                                "type": "string"
+                                            },
+                                            "descripcion": {
+                                                "description": "Descripción de la categoría",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/habitaciones/{tipo}": {
+            "get": {
+                "tags": [
+                    "Habitaciones"
+                ],
+                "summary": "Obtiene las habitaciones por tipo",
+                "operationId": "obtenerHabitacionesPorTipo",
+                "parameters": [
+                    {
+                        "name": "tipo",
+                        "in": "path",
+                        "description": "Tipo de la categoría",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "habitaciones": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "estilo": {
+                                                        "description": "Estilo de la habitación",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoría no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensaje de error",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/verificar-disponibilidad": {
+            "post": {
+                "tags": [
+                    "Reservas"
+                ],
+                "summary": "Verificar disponibilidad de habitación",
+                "description": "Verifica si una habitación está disponible para reservas en un rango de fechas especificado.",
+                "operationId": "fa13bfa1b876264b2245db3b2bbafd4f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tipoCategoria",
+                                    "estiloHabitacion",
+                                    "fechaInicio",
+                                    "fechaFin"
+                                ],
+                                "properties": {
+                                    "tipoCategoria": {
+                                        "description": "Tipo de categoría de la habitación.",
+                                        "type": "string"
+                                    },
+                                    "estiloHabitacion": {
+                                        "description": "Estilo de la habitación.",
+                                        "type": "string"
+                                    },
+                                    "fechaInicio": {
+                                        "description": "Fecha de inicio del rango de reserva (Formato: YYYY-MM-DD).",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "fechaFin": {
+                                        "description": "Fecha de fin del rango de reserva (Formato: YYYY-MM-DD).",
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "La habitación está disponible para reservas en el rango de fechas especificado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "estado": {
+                                            "description": "Estado de la habitación: 'Disponible'.",
+                                            "type": "string",
+                                            "example": "Disponible"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La categoría o la habitación no fueron encontradas.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensaje de error detallado.",
+                                            "type": "string",
+                                            "example": "Categoría no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "La habitación está ocupada en el rango de fechas especificado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "estado": {
+                                            "description": "Estado de la habitación: 'Ocupada'.",
+                                            "type": "string",
+                                            "example": "Ocupada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
